@@ -110,14 +110,16 @@ def read():
         row[i](False)
 
 
-def seg_disp(T):
+def seg_disp(T, zf = True):
     for i in [0, 1, 2, 3]:
         reset_digits()
         digits[3-i](True)
-        zero()
+        if (zf):
+            zero()
         if (T >= 10**i):
             display(ith_digit(T, i))
-        zero()
+        if (zf):
+            zero()
         reset_digits()
 
 def flicker(i, t):
@@ -137,7 +139,7 @@ def flicker(i, t):
 
 def input_timeout():
     for i in range (9, 1, -1):
-        seg_disp(i)
+        seg_disp(i, False)
         time.sleep(1)
 
 def main():
@@ -156,7 +158,7 @@ def main():
             zero()
             reset_digits()
         if (FLAG):
-            miss += 1
+            miss += PIN == user_input
             if (miss % 3 != 0):
                 if (PIN == user_input):
                     flicker(7, 0.5)
@@ -164,6 +166,7 @@ def main():
                     flicker(6, 0.5)
             else:
                 input_timeout()
+            user_input = 0
         FLAG = False
 
 if __name__ == '__main__':
