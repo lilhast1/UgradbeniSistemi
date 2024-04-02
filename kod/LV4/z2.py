@@ -195,27 +195,29 @@ def temp_map(u):
 
 
 def transform(time, temp):
-    return 300 - 10 * time, -10.5 * temp + 430 # dio oko wokwia
+    return 10 * time + 10, -11 * temp + 450 # dio oko wokwia
 
 def job(t):
     global TIME, TEMP
     oldTEMP = TEMP
     TEMP = temp_map(temp.read_u16())
     TIME += 1
-    display.set_pos(30, 0)
-    display.print('Napon: ' + str(round(temp.read_u16() / 19859 * 100)) + ' mV\n')
-    display.print('Temp: ' + str(round(TEMP, 1)) + ' C\n')
-    display.print('Vrijeme: ' + str(TIME) + ' s\n')
+    display.set_pos(SCR_HEIGHT - 40, 0)
+    display.write('Napon: ' + str(round(temp.read_u16() / 19859 * 100)) + ' mV')
+    display.set_pos(SCR_HEIGHT - 40, 20)
+    display.write('Temp: ' + str(round(TEMP, 1)) + ' C')
+    display.set_pos(SCR_HEIGHT - 40, 40)
+    display.write('Vrijeme: ' + str(TIME) + ' s')
     
     print("HALF DONE")
 
     ot, oT = transform(TIME - 1, oldTEMP)
     nt, nT = transform(TIME, TEMP)
-    draw_line(round(ot), round(oT), round(nt), round(nT), RED)
+    draw_line(round(oT), round(ot), round(nT), round(nt), RED)
 
     print("old temp: " + str(round(oldTEMP)))
-    display.fill_rectangle(round(oT)-1, round(ot)+1, 3, 3, color565(0, 0, 255))
-    display.fill_rectangle(round(nT)-1, round(nt)+1, 3, 3, RED)
+    display.fill_rectangle(round(ot)-1, round(oT)+1, 3, 3, color565(0, 0, 255))
+    display.fill_rectangle(round(nt)-1, round(nT)+1, 3, 3, RED)
     #draw_point(round(ot), round(oT), 4, BLACK)
     #draw_point(round(nt), round(nT), 4, RED)
 
@@ -224,22 +226,32 @@ def job(t):
 
 def main():
     #display.set_font(tt32)
-    display.rotation = 3 #TODO fix transformacije
-    display.init() # kljucna linija!!!!! takodjer mi je ujebala cijeli koord sistem...
-    #display.rotation = 3
-   
-    display.fill_rectangle(0, 0, SCR_HEIGHT, SCR_WIDTH, color565(255, 255, 255))
+    
+    display.rotation = 3
+    display.init()
+    display.fill_rectangle(0, 0, SCR_WIDTH, SCR_HEIGHT, color565(255, 255, 255))
     #display.pixel(SCR_WIDTH // 2, SCR_HEIGHT // 2, color565(255, 255, 255))
    #draw_circle(SCR_WIDTH // 2, SCR_HEIGHT // 2, 6)
     print("START")
-    draw_point(180, 180, 20, color565(0,0,0))
+    #draw_point(180, 180, 20, color565(0,0,0))
     print("DONE")
     display.set_color(color565(0, 0, 0), color565(255, 255, 255))
-    display.set_pos(0, SCR_WIDTH - 30)
-    display.print('Napon: ')
+    display.set_pos(12, 210)
+    display.set_font(tt14)
+    display.write('20 ')
 
-    draw_line(SCR_WIDTH - 10, 0,SCR_WIDTH - 10, SCR_HEIGHT - 10, BLACK)
-    draw_line(10, SCR_HEIGHT - 10,SCR_WIDTH - 10, SCR_HEIGHT - 10, BLACK)
+    display.set_pos(12, 115)
+    display.set_font(tt14)
+    display.write('30 ')
+
+    display.set_pos(12, 10)
+    display.set_font(tt14)
+    display.write('40 ')
+
+    display.set_pos(10, SCR_WIDTH - 20)
+
+    draw_line(SCR_HEIGHT - 10, 10, 10, 10, BLACK)
+    draw_line(SCR_HEIGHT - 10, 10, SCR_HEIGHT - 10, SCR_WIDTH - 10, BLACK)
     timmy = Timer(period=1000, mode=Timer.PERIODIC, callback=job)
     
     while (True):
