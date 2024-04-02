@@ -46,7 +46,7 @@ display = ILI9341(
 display.erase()
 
 TIME = 0
-TEMP = 0
+TEMP = 20
 BLACK = color565(0,0,0)
 RED = color565(255,0,0)
 WHITE = color565(255,255,255)
@@ -191,13 +191,13 @@ def draw_point(x, y, r, col=color565(255, 255, 255)):
 temp = ADC(Pin(28)) # 0-65535 <- 0-3.3 ; 0-1 -> 0-100 ; 1V = 19859 ; 0-19859 -> 0-100
 
 def temp_map(u):
-    return 100 / 19859 * u
+    return 100 / 65535 * u # myb problem
 
 
 def transform(time, temp):
-    return 300 - 10 * time, -11 * temp + 440 * (20 / 169) # dio oko wokwia
+    return 300 - 10 * time, -10.5 * temp + 430 # dio oko wokwia
 
-def job():
+def job(t):
     global TIME, TEMP
     oldTEMP = TEMP
     TEMP = temp_map(temp.read_u16())
@@ -211,18 +211,22 @@ def job():
 
     ot, oT = transform(TIME - 1, oldTEMP)
     nt, nT = transform(TIME, TEMP)
-    draw_line(round(oT), round(ot), round(nT), round(nt), RED)
+    draw_line(round(ot), round(oT), round(nt), round(nT), RED)
 
-    draw_point(round(oT), round(ot), 2, BLACK)
-    draw_point(round(nT), round(nt), 2, RED)
+    print("old temp: " + str(round(oldTEMP)))
+    display.fill_rectangle(round(oT)-1, round(ot)+1, 3, 3, color565(0, 0, 255))
+    display.fill_rectangle(round(nT)-1, round(nt)+1, 3, 3, RED)
+    #draw_point(round(ot), round(oT), 4, BLACK)
+    #draw_point(round(nt), round(nT), 4, RED)
 
 
 
 
 def main():
     #display.set_font(tt32)
-    
-    display.rotation = 3
+    display.rotation = 3 #TODO fix transformacije
+    display.init() # kljucna linija!!!!! takodjer mi je ujebala cijeli koord sistem...
+    #display.rotation = 3
    
     display.fill_rectangle(0, 0, SCR_HEIGHT, SCR_WIDTH, color565(255, 255, 255))
     #display.pixel(SCR_WIDTH // 2, SCR_HEIGHT // 2, color565(255, 255, 255))
@@ -234,14 +238,14 @@ def main():
     display.set_pos(0, SCR_WIDTH - 30)
     display.print('Napon: ')
 
-    draw_line(0,0,SCR_WIDTH, SCR_HEIGHT, BLACK)
-
+    draw_line(SCR_WIDTH - 10, 0,SCR_WIDTH - 10, SCR_HEIGHT - 10, BLACK)
+    draw_line(10, SCR_HEIGHT - 10,SCR_WIDTH - 10, SCR_HEIGHT - 10, BLACK)
     timmy = Timer(period=1000, mode=Timer.PERIODIC, callback=job)
     
     while (True):
-        print(TEMP)
-        job()
-        time.sleep(0.7)
+        print(temp_map(temp.read_u16()))
+        #job(0)
+        #time.sleep(0.7)
     return 0
 
 if __name__=='__main__':
