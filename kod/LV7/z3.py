@@ -3,7 +3,6 @@ from machine import ADC, Pin, PWM, Timer
 import dht
 from umqtt.robust import MQTTClient
 import ujson
-from dht import DHT11
 # teme:
 # hasta/led1
 # hasta/led2 
@@ -25,7 +24,7 @@ G = Pin(12, Pin.OUT)
 B = Pin(13, Pin.OUT)
 
 potenctiometar = ADC(Pin(26))
-dht11 = DHT11(Pin(28))
+dht11 = dht.DHT11(Pin(28))
 
 btn = Pin(0, Pin.IN)
 
@@ -79,7 +78,8 @@ def publish_button_on(p):
 	mqtt_conn.publish(b'hasta/taster', b'{"Taster": 1}')
 
 def publish_dht(p):
-	d = {"Temperatura": dht11.temperature, "Vlaga": dht11.humidity}
+	dht11.measure()
+	d = {"Temperatura": dht11.temperature(), "Vlaga": dht11.humidity()}
 	s = ujson.dumps(d)
 	b = s.encode('utf-8')
 	mqtt_conn.publish(b'hasta/DHTmjerenja', b)
