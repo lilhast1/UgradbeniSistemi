@@ -54,6 +54,8 @@ _start:
 
 
 	ldr r6, =niz
+	ldr r8, N
+	ldr r9, N
 parse:
 	push {lr}
 	mov r7, #3
@@ -64,6 +66,8 @@ parse:
 	bl readint
 	pop {lr}
 	cmp r7, #0xFFFFFFFF
+	beq procitano
+	cmp r8, r9
 	beq procitano
 	add r6, #4
 	b  parse
@@ -98,14 +102,6 @@ exit:
 
 
 
-
-
-
-
-
-
-
-
 // citaj int sa std in na lokaciju data u r6 a u r7 stavlja lokaciju buffera koju nije mogao
 readint:
 	push {r11}
@@ -133,22 +129,20 @@ desno:ldrb r1, [r0]
 	ldr r1, tekst
 
 	mov r2, #0
-	ldrb r2, [r0], #-1
-	sub r2, #48
 procesiraj:
-	ldrb r3, [r0], #-1
+	ldrb r3, [r1], #1
 	
 	sub r3, #48
 
-	mov r4, r3
+	mov r4, r2
 	lsl r4, #3
-	lsl r3, #1
-	add r3, r4 // mnozenje r3 sa 10
+	lsl r2, #1
+	add r2, r4 // mnozenje r2 sa 10
 
 	add r2, r3 
 
 	cmp r0, r1
-	bge procesiraj
+	ble procesiraj
 
 	str r2, [r6]
 
