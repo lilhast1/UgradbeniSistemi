@@ -36,21 +36,21 @@ desno:ldrb r1, [r0]
 
 	mov r2, #0
 procesiraj:
-	ldrb r3, [r0], #-1
+	ldrb r3, [r1], #1
 	
 	sub r3, #48
 
-	mov r4, r3
+	mov r4, r2
 	lsl r4, #3
-	lsl r3, #1
-	add r3, r4 // mnozenje r3 sa 10
+	lsl r2, #1
+	add r2, r4 // mnozenje r2 sa 10
 
 	add r2, r3 
 
 	cmp r0, r1
 	bge procesiraj
-
-	str r2, loc
+	ldr r3, loc
+	str r2, [r3]
 
 exit:
 	mov r0, #0

@@ -1,4 +1,4 @@
-// shellsort nad nizom charova unsen preko stdin
+// sort nad nizom charova unsen preko stdin
 
 .data
 tekst: .asciz "_._._._._._._._._._._._._._."
@@ -10,7 +10,7 @@ _start:
 	mov r7, #3
 	mov r0, #0
 	ldr r1, tekst_addr
-	mov r2, #20 
+	mov r2, #N
 	swi #0
 
 	// sortiraj
@@ -30,7 +30,7 @@ _start:
 	ldr r0, tekst_addr
 	add r0, #1
 	ldr r3, tekst_addr
-	add r3, #20
+	add r3, #N
 
 	loop:
 
@@ -61,7 +61,7 @@ _start:
 	mov r7, #4
 	ldr r1, tekst_addr
 	mov r0, #1
-	mov r2, #20
+	mov r2, #N
 	swi #0
 
 
@@ -71,5 +71,5 @@ exit:
 	swi #0
 
 tekst_addr: .word tekst
-N: .word 20
+N: .word 11
 stdin: .word 0
