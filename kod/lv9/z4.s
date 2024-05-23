@@ -55,7 +55,6 @@ _start:
 
 	ldr r6, =niz
 	ldr r8, N
-	ldr r9, N
 parse:
 	push {lr}
 	mov r7, #3
@@ -67,9 +66,10 @@ parse:
 	pop {lr}
 	cmp r7, #0xFFFFFFFF
 	beq procitano
-	cmp r8, r9
+	cmp r8, #0
 	beq procitano
 	add r6, #4
+	sub r8, #1
 	b  parse
 procitano:
 	ldr r0, arr
@@ -142,7 +142,7 @@ procesiraj:
 	add r2, r3 
 
 	cmp r0, r1
-	ble procesiraj
+	bge procesiraj
 
 	str r2, [r6]
 
