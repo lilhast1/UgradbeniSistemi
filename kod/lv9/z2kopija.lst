@@ -1,0 +1,105 @@
+ARM GAS  z2kopija.s 			page 1
+
+
+   1              	// shellsort nad nizom charova unsen preko stdin
+   2              	
+   3              	.data
+   4 0000 5F2E5F2E 	tekst: .asciz "_._._._._._._._._._._._._._."
+   4      5F2E5F2E 
+   4      5F2E5F2E 
+   4      5F2E5F2E 
+   4      5F2E5F2E 
+   5              	.text
+   6              		
+   7              	.global _start
+   8              	_start:
+   9              		// unesi N u niz
+  10 0000 0370A0E3 		mov r7, #3
+  11 0004 0000A0E3 		mov r0, #0
+  12 0008 74109FE5 		ldr r1, tekst_addr
+  13 000c 1420A0E3 		mov r2, #20 
+  14 0010 000000EF 		swi #0
+  15              	
+  16              		// sortiraj
+  17              		
+  18              		// for (char* j = arr + 1; j < arr + N; j++) {
+  19              		// 	char k = *j;
+  20              		// 	for (char* i = j - 1; i >= arr; i--) {
+  21              		// 		if (k >= *i) {
+  22              		// 			i = i + 1;
+  23              		// 			break;
+  24              		// 		}
+  25              		// 		*(i + 1) = *i
+  26              		// 	}
+  27              		// 	*i = k;
+  28              		// } 
+  29              		
+  30 0014 68009FE5 		ldr r0, tekst_addr
+  31 0018 010080E2 		add r0, #1
+  32 001c 60309FE5 		ldr r3, tekst_addr
+  33 0020 143083E2 		add r3, #20
+  34              	
+  35              		loop:
+  36              	
+  37 0024 0020D0E5 			ldrb r2, [r0]
+  38 0028 0010A0E1 			mov r1, r0
+  39 002c 011041E2 			sub r1, #1  
+  40              	
+  41              			inner_loop:
+  42 0030 0040D1E5 				ldrb r4, [r1]
+  43 0034 040052E1 				cmp r2, r4 
+  44 0038 010000BA 				blt end_if 
+  45 003c 011081E2 				if: add r1, #1
+  46 0040 030000EA 					b end_inner
+  47 0044 0140C1E5 				end_if: strb r4, [r1, #1]
+  48              	
+  49 0048 011041E2 				sub r1, #1
+  50 004c 840051E3 				cmp r1, #tekst_addr
+  51 0050 F6FFFFAA 				bge inner_loop
+  52              			end_inner:
+  53 0054 0020C1E5 			strb r2, [r1]
+ARM GAS  z2kopija.s 			page 2
+
+
+  54              	
+  55 0058 010080E2 			add r0, #1
+  56 005c 030050E1 			cmp r0, r3 
+  57 0060 EFFFFFBA 			blt loop
+  58              		end_loop:
+  59              	
+  60              		// ispisi niz
+  61 0064 0470A0E3 		mov r7, #4
+  62 0068 14109FE5 		ldr r1, tekst_addr
+  63 006c 0100A0E3 		mov r0, #1
+  64 0070 1420A0E3 		mov r2, #20
+  65 0074 000000EF 		swi #0
+  66              	
+  67              	
+  68              	exit:
+  69 0078 0000A0E3 		mov r0, #0
+  70 007c 0170A0E3 		mov r7, #1
+  71 0080 000000EF 		swi #0
+  72              	
+  73 0084 00000000 	tekst_addr: .word tekst
+  74 0088 14000000 	N: .word 20
+  75 008c 00000000 	stdin: .word 0
+ARM GAS  z2kopija.s 			page 3
+
+
+DEFINED SYMBOLS
+          z2kopija.s:4      .data:00000000 tekst
+          z2kopija.s:8      .text:00000000 _start
+          z2kopija.s:10     .text:00000000 $a
+          z2kopija.s:73     .text:00000084 tekst_addr
+          z2kopija.s:35     .text:00000024 loop
+          z2kopija.s:41     .text:00000030 inner_loop
+          z2kopija.s:47     .text:00000044 end_if
+          z2kopija.s:45     .text:0000003c if
+          z2kopija.s:52     .text:00000054 end_inner
+          z2kopija.s:58     .text:00000064 end_loop
+          z2kopija.s:68     .text:00000078 exit
+          z2kopija.s:73     .text:00000084 $d
+          z2kopija.s:74     .text:00000088 N
+          z2kopija.s:75     .text:0000008c stdin
+
+NO UNDEFINED SYMBOLS

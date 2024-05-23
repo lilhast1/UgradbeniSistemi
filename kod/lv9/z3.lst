@@ -1,0 +1,89 @@
+ARM GAS  z3.s 			page 1
+
+
+   1              	.data
+   2 0000 5F5F5F5F 		tekst: .asciz "____....____"
+   2      2E2E2E2E 
+   2      5F5F5F5F 
+   2      00
+   3 000d 0C000000 		N : .word 12
+   4 0011 21000000 		LOCATION: .word 33
+   5              	.text
+   6              	.global _start
+   7              	_start:
+   8              		// uzmi 12 iz stdin
+   9              	ponovo:
+  10 0000 0370A0E3 		mov r7, #3
+  11 0004 0000A0E3 		mov r0, #0
+  12 0008 7C109FE5 		ldr r1, tekst_addr
+  13 000c 0C20A0E3 		mov r2, #12
+  14 0010 000000EF 		swi #0
+  15              	
+  16 0014 70009FE5 		ldr r0, tekst_addr
+  17 0018 6C209FE5 		ldr r2, tekst_addr
+  18 001c 0C2082E2 		add r2, #12
+  19              		// dok je procitano numericko idi desno
+  20 0020 0010D0E5 	desno:ldrb r1, [r0]
+  21 0024 300051E3 		cmp r1, #48
+  22 0028 040000BA 		blt vrati
+  23 002c 3A0051E3 		cmp r1, #58
+  24 0030 020000AA 		bge vrati
+  25 0034 010080E2 		add r0, #1
+  26 0038 020050E1 		cmp r0, r2 // izvan opsega izlazi
+  27 003c F7FFFFDA 		ble desno
+  28              		// kad nije vrati lijevo
+  29              		vrati:
+  30 0040 010040E2 		sub r0, #1
+  31 0044 40109FE5 		ldr r1, tekst_addr
+  32 0048 010050E1 		cmp r0, r1
+  33 004c EBFFFFBA 		blt ponovo
+  34              	
+  35 0050 34109FE5 		ldr r1, tekst_addr
+  36              	
+  37 0054 0020A0E3 		mov r2, #0
+  38              	procesiraj:
+  39 0058 013050E4 		ldrb r3, [r0], #-1
+  40              		
+  41 005c 303043E2 		sub r3, #48
+  42              	
+  43 0060 0340A0E1 		mov r4, r3
+  44 0064 8441A0E1 		lsl r4, #3
+  45 0068 8330A0E1 		lsl r3, #1
+  46 006c 043083E0 		add r3, r4 // mnozenje r3 sa 10
+  47              	
+  48 0070 032082E0 		add r2, r3 
+  49              	
+  50 0074 010050E1 		cmp r0, r1
+  51 0078 F6FFFFAA 		bge procesiraj
+  52              	
+  53 007c 0C208FE5 		str r2, loc
+  54              	
+ARM GAS  z3.s 			page 2
+
+
+  55              	exit:
+  56 0080 0000A0E3 		mov r0, #0
+  57 0084 0170A0E3 		mov r7, #1
+  58 0088 000000EF 		swi #0
+  59              	
+  60 008c 00000000 	tekst_addr: .word tekst
+  61 0090 11000000 	loc: .word LOCATION
+ARM GAS  z3.s 			page 3
+
+
+DEFINED SYMBOLS
+                z3.s:2      .data:00000000 tekst
+                z3.s:3      .data:0000000d N
+                z3.s:4      .data:00000011 LOCATION
+                z3.s:7      .text:00000000 _start
+                z3.s:9      .text:00000000 ponovo
+                z3.s:10     .text:00000000 $a
+                z3.s:60     .text:0000008c tekst_addr
+                z3.s:20     .text:00000020 desno
+                z3.s:29     .text:00000040 vrati
+                z3.s:38     .text:00000058 procesiraj
+                z3.s:61     .text:00000090 loc
+                z3.s:55     .text:00000080 exit
+                z3.s:60     .text:0000008c $d
+
+NO UNDEFINED SYMBOLS

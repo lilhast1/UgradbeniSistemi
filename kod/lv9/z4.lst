@@ -1,0 +1,247 @@
+ARM GAS  z4.s 			page 1
+
+
+   1              	.data
+   2 0000 5F5F5F5F 		tekstic: .asciz "____....________....________....________....________....________....________...._
+   2      2E2E2E2E 
+   2      5F5F5F5F 
+   2      5F5F5F5F 
+   2      2E2E2E2E 
+   3 00f1 14000000 		Nmem: .word 20
+   4 00f5 8D030000 			.word 909
+   5 00f9 14000000 		N_MAX: .word 20
+   6 00fd 0A256420 		fstr: .asciz "\n%d %d %d\n"
+   6      25642025 
+   6      640A00
+   7              		niz: 
+   8 0108 00F00000 		.word   0x0000F000
+   9 010c 01F00000 	    .word   0x0000F001
+  10 0110 02F00000 	    .word   0x0000F002
+  11 0114 00F00000 	    .word   0x0000F000
+  12 0118 01F00000 	    .word   0x0000F001
+  13 011c 02F00000 	    .word   0x0000F002
+  14 0120 00F00000 	    .word   0x0000F000
+  15 0124 01F00000 	    .word   0x0000F001
+  16 0128 02F00000 	    .word   0x0000F002
+  17 012c 00F00000 	    .word   0x0000F000
+  18 0130 01F00000 	    .word   0x0000F001
+  19 0134 02F00000 	    .word   0x0000F002
+  20 0138 00F00000 	    .word   0x0000F000
+  21 013c 01F00000 	    .word   0x0000F001
+  22 0140 02F00000 	    .word   0x0000F002
+  23 0144 00F00000 	    .word   0x0000F000
+  24 0148 01F00000 	    .word   0x0000F001
+  25 014c 02F00000 	    .word   0x0000F002
+  26 0150 00F00000 	    .word   0x0000F000
+  27 0154 01F00000 	    .word   0x0000F001
+  28              	.text
+  29              	
+  30              	.global _start
+  31              	_start:
+  32              		// unesi N
+  33 0000 0370A0E3 		mov r7, #3
+  34 0004 0000A0E3 		mov r0, #0
+  35 0008 9C119FE5 		ldr r1, tekst
+  36 000c 0220A0E3 		mov r2, #2 
+  37 0010 000000EF 		swi #0	
+  38              	
+  39 0014 98619FE5 		ldr r6, =Nmem
+  40 0018 04E02DE5 		push {lr}
+  41 001c 2A0000EB 		bl readint // parsiraj 
+  42 0020 04E09DE4 		pop {lr}
+  43 0024 010077E3 		cmp r7,#0xFFFFFFFF // nema inta
+  44 0028 FEFFFF1A 		bne _start
+  45 002c 140057E3 		cmp r7, #20 // previse brojeva
+  46 0030 FEFFFFCA 		bgt _start
+  47              	
+  48              		// unesi niz
+  49 0034 0370A0E3 		mov r7, #3
+  50 0038 0000A0E3 		mov r0, #0
+  51 003c 68119FE5 		ldr r1, tekst
+ARM GAS  z4.s 			page 2
+
+
+  52 0040 68219FE5 		ldr r2, N // *N 
+  53 0044 000000EF 		swi #0	
+  54              	
+  55              	
+  56 0048 68619FE5 		ldr r6, =niz
+  57              	parse:
+  58 004c 04E02DE5 		push {lr}
+  59 0050 0370A0E3 		mov r7, #3
+  60 0054 0000A0E3 	        mov r0, #0
+  61 0058 4C119FE5 	        ldr r1, tekst
+  62 005c 0C20A0E3 		mov r2, #12
+  63 0060 000000EF 	        swi #0
+  64 0064 180000EB 		bl readint
+  65 0068 04E09DE4 		pop {lr}
+  66 006c 010077E3 		cmp r7, #0xFFFFFFFF
+  67 0070 0100000A 		beq procitano
+  68 0074 046086E2 		add r6, #4
+  69 0078 F3FFFFEA 		b  parse
+  70              	procitano:
+  71 007c 20019FE5 		ldr r0, arr
+  72 0080 04E02DE5 		push {lr}
+  73 0084 340000EB 		bl sort
+  74 0088 04E09DE4 		pop {lr}  
+  75              	
+  76              	// nadji medijanu, max i opseg
+  77 008c 10019FE5 		ldr r0, arr // r0 ptr
+  78 0090 001090E5 		ldr r1, [r0] // r1 - min
+  79 0094 18319FE5 		ldr r3, =Nmem // r3 - N
+  80 0098 043043E2 		sub r3, #4 // r3 = N - 1
+  81 009c 0331A0E1 		lsl r3, #2
+  82 00a0 032090E7 		ldr r2, [r0, r3] // r2 - max
+  83 00a4 A331A0E1 		lsr r3, #3  // r3 - N / 2
+  84 00a8 0331A0E1 		lsl r3, #2  // r3 = 4 * floor(N/2)  
+  85 00ac 030080E0 		add r0, r3
+  86 00b0 003090E5 		ldr r3, [r0]
+  87 00b4 0E002DE9 		push {r1, r2, r3}
+  88 00b8 E8009FE5 		ldr r0, format
+  89 00bc FEFFFFEB 		bl printf
+  90              	
+  91              	
+  92              	
+  93              	exit:
+  94 00c0 0000A0E3 		mov r0, #0
+  95 00c4 0170A0E3 		mov r7, #1
+  96 00c8 000000EF 		swi #0
+  97              	
+  98              	
+  99              	
+ 100              	
+ 101              	
+ 102              	
+ 103              	
+ 104              	
+ 105              	
+ 106              	
+ 107              	
+ 108              	
+ARM GAS  z4.s 			page 3
+
+
+ 109              	// citaj int sa std in na lokaciju data u r6 a u r7 stavlja lokaciju buffera koju nije mogao
+ 110              	readint:
+ 111 00cc 04B02DE5 		push {r11}
+ 112 00d0 D4009FE5 		ldr r0, tekst
+ 113 00d4 D0209FE5 		ldr r2, tekst
+ 114 00d8 D0409FE5 		ldr r4, N
+ 115 00dc 042082E0 		add r2, r4
+ 116              		// dok je procitano numericko idi desno
+ 117 00e0 0010D0E5 	desno:ldrb r1, [r0]
+ 118 00e4 300051E3 		cmp r1, #48
+ 119 00e8 040000BA 		blt vrati
+ 120 00ec 390051E3 		cmp r1, #57
+ 121 00f0 020000CA 		bgt vrati
+ 122 00f4 010080E2 		add r0, #1
+ 123 00f8 020050E1 		cmp r0, r2 // izvan opsega izlazi
+ 124 00fc F7FFFFDA 		ble desno
+ 125              		// kad nije vrati lijevo
+ 126              		vrati:
+ 127 0100 010040E2 		sub r0, #1
+ 128 0104 0070A0E1 		mov r7, r0
+ 129 0108 9C909FE5 		ldr r9, tekst
+ 130 010c 090050E1 		cmp r0, r9
+ 131 0110 0F0000BA 		blt NO_INT
+ 132 0114 04B09DE4 		pop {r11}
+ 133 0118 8C109FE5 		ldr r1, tekst
+ 134              	
+ 135 011c 0020A0E3 		mov r2, #0
+ 136 0120 012050E4 		ldrb r2, [r0], #-1
+ 137 0124 302042E2 		sub r2, #48
+ 138              	procesiraj:
+ 139 0128 013050E4 		ldrb r3, [r0], #-1
+ 140              		
+ 141 012c 303043E2 		sub r3, #48
+ 142              	
+ 143 0130 0340A0E1 		mov r4, r3
+ 144 0134 8441A0E1 		lsl r4, #3
+ 145 0138 8330A0E1 		lsl r3, #1
+ 146 013c 043083E0 		add r3, r4 // mnozenje r3 sa 10
+ 147              	
+ 148 0140 032082E0 		add r2, r3 
+ 149              	
+ 150 0144 010050E1 		cmp r0, r1
+ 151 0148 F6FFFFAA 		bge procesiraj
+ 152              	
+ 153 014c 002086E5 		str r2, [r6]
+ 154              	
+ 155 0150 1EFF2FE1 	end_read_int:	bx lr
+ 156 0154 0070E0E3 	NO_INT: mov r7, #0xFFFFFFFF
+ 157 0158 1EFF2FE1 			bx lr
+ 158              	
+ 159              	// sortiraj niz intova iz [r0]
+ 160              	sort:
+ 161 015c 0050A0E1 		mov r5, r0
+ 162              		loop:
+ 163              	
+ 164 0160 002090E5 			ldr r2, [r0]
+ 165 0164 0010A0E1 			mov r1, r0
+ARM GAS  z4.s 			page 4
+
+
+ 166 0168 041041E2 			sub r1, #4  
+ 167              	
+ 168              			inner_loop:
+ 169 016c 004091E5 				ldr r4, [r1]
+ 170 0170 040052E1 				cmp r2, r4 
+ 171 0174 010000BA 				blt end_if 
+ 172 0178 011081E2 				if: add r1, #1
+ 173 017c 030000EA 					b end_inner
+ 174 0180 0440C1E5 				end_if: strb r4, [r1, #4]
+ 175              	
+ 176 0184 041041E2 				sub r1, #4
+ 177 0188 050051E1 				cmp r1, r5
+ 178 018c F6FFFFAA 				bge inner_loop
+ 179              			end_inner:
+ 180 0190 0020C1E5 			strb r2, [r1]
+ 181              	
+ 182 0194 040080E2 			add r0, #4
+ 183 0198 030050E1 			cmp r0, r3 
+ 184 019c EFFFFFBA 			blt loop
+ 185              		end_loop:
+ 186 01a0 1EFF2FE1 	end_sort:	bx lr
+ 187 01a4 08010000 	arr: .word niz
+ 188 01a8 FD000000 	format: .word fstr
+ 189 01ac 00000000 	tekst: .word tekstic
+ 190 01b0 F1000000 	N: .word Nmem
+ 190      F1000000 
+ 190      08010000 
+ARM GAS  z4.s 			page 5
+
+
+DEFINED SYMBOLS
+                z4.s:2      .data:00000000 tekstic
+                z4.s:3      .data:000000f1 Nmem
+                z4.s:5      .data:000000f9 N_MAX
+                z4.s:6      .data:000000fd fstr
+                z4.s:7      .data:00000108 niz
+                z4.s:31     .text:00000000 _start
+                z4.s:33     .text:00000000 $a
+                z4.s:189    .text:000001ac tekst
+                z4.s:110    .text:000000cc readint
+                z4.s:190    .text:000001b0 N
+                z4.s:57     .text:0000004c parse
+                z4.s:70     .text:0000007c procitano
+                z4.s:187    .text:000001a4 arr
+                z4.s:160    .text:0000015c sort
+                z4.s:188    .text:000001a8 format
+                z4.s:93     .text:000000c0 exit
+                z4.s:117    .text:000000e0 desno
+                z4.s:126    .text:00000100 vrati
+                z4.s:156    .text:00000154 NO_INT
+                z4.s:138    .text:00000128 procesiraj
+                z4.s:155    .text:00000150 end_read_int
+                z4.s:162    .text:00000160 loop
+                z4.s:168    .text:0000016c inner_loop
+                z4.s:174    .text:00000180 end_if
+                z4.s:172    .text:00000178 if
+                z4.s:179    .text:00000190 end_inner
+                z4.s:185    .text:000001a0 end_loop
+                z4.s:186    .text:000001a0 end_sort
+                z4.s:187    .text:000001a4 $d
+                z4.s:190    .text:000001b4 $d
+
+UNDEFINED SYMBOLS
+printf

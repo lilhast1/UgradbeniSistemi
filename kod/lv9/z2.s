@@ -1,9 +1,7 @@
 // shellsort nad nizom charova unsen preko stdin
 
-	.data
+.data
 tekst: .asciz "_._._._._._._._._._._._._._."
-N: .word 28
-stdin: .word 0x0
 .text
 	
 .global _start
@@ -11,8 +9,8 @@ _start:
 	// unesi N u niz
 	mov r7, #3
 	mov r0, #0
-	mov r1, =tekst
-	mov r2, #N 
+	ldr r1, tekst_addr
+	mov r2, #20 
 	swi #0
 
 	// sortiraj
@@ -29,10 +27,10 @@ _start:
 	// 	*i = k;
 	// } 
 	
-	mov r0, =tekst
+	ldr r0, tekst_addr
 	add r0, #1
-	mov r3, =tekst
-	add r3, #N
+	ldr r3, tekst_addr
+	add r3, #20
 
 	loop:
 
@@ -46,10 +44,10 @@ _start:
 			blt end_if 
 			if: add r1, #1
 				b end_inner
-			end_if: strb r4, [r1, 1]
+			end_if: strb r4, [r1, #1]
 
 			sub r1, #1
-			cmp r1, =tekst
+			cmp r1, #tekst_addr
 			bge inner_loop
 		end_inner:
 		strb r2, [r1]
@@ -61,14 +59,17 @@ _start:
 
 	// ispisi niz
 	mov r7, #4
-	mov r1, =tekst
+	ldr r1, tekst_addr
 	mov r0, #1
-	mov r2, #N
+	mov r2, #20
 	swi #0
 
 
 exit:
 	mov r0, #0
 	mov r7, #1
-	swi
+	swi #0
 
+tekst_addr: .word tekst
+N: .word 20
+stdin: .word 0

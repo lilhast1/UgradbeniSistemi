@@ -9,30 +9,30 @@ _start:
 ponovo:
 	mov r7, #3
 	mov r0, #0
-	mov r1, =tekst
-	mov r2, #N 
+	ldr r1, tekst_addr
+	mov r2, #12
 	swi #0
 
-	mov r0, =tekst
-	mov r2, =tekst
-	add r2, #N
+	ldr r0, tekst_addr
+	ldr r2, tekst_addr
+	add r2, #12
 	// dok je procitano numericko idi desno
 desno:ldrb r1, [r0]
 	cmp r1, #48
-	bl vrati
+	blt vrati
 	cmp r1, #58
 	bge vrati
 	add r0, #1
 	cmp r0, r2 // izvan opsega izlazi
-	ble desno:
+	ble desno
 	// kad nije vrati lijevo
 	vrati:
 	sub r0, #1
+	ldr r1, tekst_addr
+	cmp r0, r1
+	blt ponovo
 
-	cmp r0, =tekst
-	bl ponovo
-
-	mov r1, =tekst
+	ldr r1, tekst_addr
 
 	mov r2, #0
 procesiraj:
@@ -50,9 +50,12 @@ procesiraj:
 	cmp r0, r1
 	bge procesiraj
 
-	str r2, LOCATION
+	str r2, loc
 
 exit:
 	mov r0, #0
 	mov r7, #1
-	swi
+	swi #0
+
+tekst_addr: .word tekst
+loc: .word LOCATION
