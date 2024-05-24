@@ -51,7 +51,7 @@ parse:
 	ldr r7, =N
 	push {lr}
 	bl sort
-	pop{lr}
+	pop {lr}
 
 medminmax:
 	// min je r6
@@ -184,5 +184,4 @@ load_buffer:
 tekst_addr: .word tekst
 loc: .word LOCATION
 arr_addr: .word array
-N: .word 11
 stdin: .word 0
