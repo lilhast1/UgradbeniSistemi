@@ -2,6 +2,7 @@
 	tekst: .asciz "____....____"
 	N : .word 12
 	LOCATION: .word 33
+	fstr: .asciz "\n%d %d %d\n"
 .text
 .global _start
 _start:
