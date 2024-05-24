@@ -66,7 +66,7 @@ medminmax:
 	ldr r2, [r6, r8]
 printing:
 	push {r0, r1, r2}
-	ldr r0, format
+	ldr r0, =format
 	bl printf
 exit:
 	mov r0, #0
