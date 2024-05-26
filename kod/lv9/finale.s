@@ -33,6 +33,7 @@ fill_arr:
 	add r1, #4
 
 	pop {r3, r4}
+	add r4, #1
 	cmp r4, r3
 	
 	blt fill_arr
