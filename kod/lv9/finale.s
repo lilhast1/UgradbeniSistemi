@@ -115,8 +115,9 @@ second_chance:
 // r0 - duzina, r1 - niz
 sort:
 	mov r4, r1
-	add r5, r4, r0
-	add r0, r4, #1
+	lsl r6, r0, #2
+	add r5, r4, r6
+	add r0, r4, #4
 	
 	L1:
 	ldr r2, [r0]
