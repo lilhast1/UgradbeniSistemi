@@ -47,7 +47,8 @@ fill_arr:
 
 
 	// nadji medianu - r1, max - r2 i opseg - r3
-	pop {r0} // r0 je N
+	ldr r1, =N 
+	ldr r0, [r1]
 	ldr r4, =arr
 	ldr r3, [r4] // r3 je min
 
