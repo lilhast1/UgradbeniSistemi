@@ -38,7 +38,7 @@ end_unos:
 	beq _start
 
 	// upisi r3 u var
-	ldr r0, =buffer
+	ldr r0, =var
 	str r3, [r0]
 
 exit:
