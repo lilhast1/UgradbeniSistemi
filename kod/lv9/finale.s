@@ -73,7 +73,7 @@ exit:
 // r0 - duzina niza, r1 - lokacija, r2 - buffer
 // r0 - dokle je buffer procitan
 readint:
-	ldr r3, [r2], #1
+	ldrb r3, [r2], #1
 	cmp r3, #48 // 48 = '0'
 	blt second_chance
 	cmp r3, #57 // 57 = '9'
@@ -85,7 +85,7 @@ parse:
 
 	add r4, r3, r4
 
-	ldr r3, [r2], #1
+	ldrb r3, [r2], #1
 	cmp r3, #48 // 48 = '0'
 	blt end_read
 	cmp r3, #57 // 57 = '9'
@@ -122,16 +122,16 @@ sort:
 	loop:
 	cmp r1, r4
 	ble end_loop
-		sub r6, r1, #1
+		sub r6, r1, #4
 		ldrb r3, [r6]
 		cmp r3, r2
 		ble end_loop
 		strb r3, [r1]
-		sub r1, #1
+		sub r1, #4
 		b loop
 	end_loop:
 	strb r2, [r1]
-	add r0, #1
+	add r0, #4
 	cmp r0, r5
 	blt L1
 	bx lr
