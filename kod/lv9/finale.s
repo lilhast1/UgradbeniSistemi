@@ -1,13 +1,9 @@
 .global _start
 .text
-_again:
-	add sp, sp, #120
 _start:
-	//buffer je na steku
-	sub sp, sp, #120
 	// ucitaj u buffer
 	mov r2, #120
-	mov r1, sp
+	ldr r1, =buffer
 	mov r0, #0
 	mov r7, #3
 	swi #0
@@ -25,7 +21,7 @@ _start:
 
 	ldr r3, [r1]
 	cmp r3, #10
-	bgt _again // maksimalna velicina niza prepucana
+	bgt _start // maksimalna velicina niza prepucana
 
 	mov r4, #0
 	ldr r1, =arr
