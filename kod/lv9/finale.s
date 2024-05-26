@@ -56,7 +56,8 @@ fill_arr:
 	lsl r5, r0, #2
 	ldr r2, [r4, r5] // uzmi zadnji on je max
 
-	lsr r5, r5, #3  // r5 je sada N/2
+	add r0, #1
+	lsr r5, r0, #1  // r5 je sada N/2
 	lsl r5, r5, #2  // r5 je sada 2N
 	ldr r1, [r4, r5] // mediana
 
