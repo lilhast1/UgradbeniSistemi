@@ -119,20 +119,20 @@ sort:
 	add r0, r4, #1
 	
 	L1:
-	ldrb r2, [r0]
+	ldr r2, [r0]
 	mov r1, r0
 	loop:
 	cmp r1, r4
 	ble end_loop
 		sub r6, r1, #4
-		ldrb r3, [r6]
+		ldr r3, [r6]
 		cmp r3, r2
 		ble end_loop
-		strb r3, [r1]
+		str r3, [r1]
 		sub r1, #4
 		b loop
 	end_loop:
-	strb r2, [r1]
+	str r2, [r1]
 	add r0, #4
 	cmp r0, r5
 	blt L1
