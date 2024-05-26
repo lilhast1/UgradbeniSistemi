@@ -30,13 +30,13 @@ _start:
 	mov r4, #0
 	ldr r1, =arr
 fill_arr:
-	push {r4, r3}
+	push {r3, r4}
 
 	bl readint
 	mov r2, r0
 	add r1, #4
 
-	pop {r4, r3}
+	pop {r3, r4}
 	cmp r4, r3
 	
 	blt fill_arr
