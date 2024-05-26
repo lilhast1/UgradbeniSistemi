@@ -79,9 +79,9 @@ exit:
 readint:
 	ldr r3, [r2], #1
 	cmp r3, #48 // 48 = '0'
-	blt readint
+	blt second_chance
 	cmp r3, #57 // 57 = '9'
-	bgt readint
+	bgt second_chance
 
 	mov r4, #0
 parse:
@@ -105,7 +105,14 @@ end_read:
 	mov r0, r2
 	str r4, [r1]
 	bx lr
-
+second_chance:
+	cmp r3, #0x20 // space
+	beq readint
+	cmp r3, #13 // newline
+	beq readint
+	cmp r3, #9
+	beq readint // tab
+	b end_read
 
 // r0 - duzina, r1 - niz
 sort:
